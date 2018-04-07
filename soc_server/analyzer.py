@@ -4,14 +4,11 @@ import json
 
 class SocAnalyzerServer(object):
     def __init__(self):
+        config = json.load("config.json")
         self.rbw = RabbitWorker(topic="analyze_stream", binding_keys=["socbox.analyze"],
                                 queue_name="socbox_analyze",
                                 exclusive=False,  # Exclusive lets us persist messages in our queue through restarts
-                                **{
-                                    "username": "rabbitmq",
-                                    "password": "rabbitmq",
-                                    "host": "localhost"
-                                })
+                                **config["rabbit"])
         self.rbw.connect()
         self.analyzers = []
 
