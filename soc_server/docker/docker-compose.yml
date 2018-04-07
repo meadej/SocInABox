@@ -1,0 +1,31 @@
+version: '2'
+services:
+  mongo:
+    image: "mongo:latest"
+    hostname: "SocBoxMongodb"
+    container_name: "socbox-mongodb"
+    environment:
+      - "MONGO_DATA_DIR=/data/db"
+      - "MONGO_LOG_DIR=/data/logs"
+    volumes:
+      - "./mongo/data/db:/data/db"
+      - "./mongo/data/logs:/data/logs"
+    ports:
+        - "27017:27017"
+    command: "mongod --smallfiles"
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    hostname: "SocBoxRabbitmq"
+    container_name: "socbox-rabbitmq"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "socbox-rabbitmq"
+    volumes:
+      - "./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
