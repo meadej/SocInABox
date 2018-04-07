@@ -2,15 +2,15 @@
 Traffic Analysis and Response Platform
 ## Our response to MD5's mission to...
 
-## Prepare ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/prepare.PNG "prepare.png")
+## ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/prepare.PNG "prepare.png") Prepare
 TARP utilizes open-source data about existing risks in addition to our analysis of new ones to be prepared for both known 
 and unknown threats. 
 
-## Detect ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/detect.PNG "detect.png")
+## ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/detect.PNG "detect.png") Detect 
 Our system uses a hybrid of static analysis and machine learning algorithims in order to keep a constantly updated watch over 
 the data traversing into and out of the network. 
 
-## Respond ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/respond.PNG "respond.png")
+## ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/respond.PNG "respond.png") Respond 
 Based on data received from our analysis platform, TARP will implement intelligent firewall rules in-between
 the system and the external web. It will also notify the user when anamolies are detected, allowing enterprise
 users to diagnose and resolve the problem using their own personnel and resources. 
