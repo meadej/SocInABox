@@ -15,7 +15,7 @@ def build_iptable_rule(packet_data):
     rule_string = "iptables "
     for key in rule_dict.keys:
         rule_string += " " + str(key) + " " + str(rule_dict[key])
-    return
+    return    
 
 @app.route('/response', methods=['POST'])
 def receive_response():
@@ -24,14 +24,15 @@ def receive_response():
     """
     if request.method == 'POST':
         ip_data = request.form['rules']
-        rule_data = {
-            'dest_ip':ip_data['ip'],
-            'status':ip_data['status']
-        }
-        if ip_data['status'] == 'RED':
-            new_rule = build_iptable_rule(rule_data)
-            execute_iptable_rule(new_rule)
-	elif ip_data['status'] == 'AMBER':
-            #TODO: Notify user
-            return
+        for rule in ip_data:
+            rule_data = {
+                'dest_ip':ip_data['ip'],
+                'status':ip_data['status']
+            }
+            if rule_data['status'] == 'RED':
+                new_rule = build_iptable_rule(rule_data)
+                execute_iptable_rule(new_rule)
+            elif rule_data['status'] == 'AMBER':
+                #TODO: Notify user
+                return
     return
