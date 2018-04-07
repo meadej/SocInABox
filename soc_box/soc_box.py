@@ -31,3 +31,6 @@ def update_firewall():
             #TODO: Notify user
             return
     return
+
+if __name__ == "__main__":
+    update_firewall()
