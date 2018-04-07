@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request
+from flask import request as req
 import requests
 
 app = Flask(__name__)
@@ -8,16 +8,19 @@ app = Flask(__name__)
 @app.route('/check', methods=['POST'])
 def check():
     """
-    Takes in a POST request with the src_ip and dest_ip set and processes them through the static analysis/ML checker.
+    Takes in a POST request with the src_ip and dst_ip set and processes them through the static analysis/ML checker.
     """
-    if request.method == 'POST':
-        packet_data = {}
-        packet_data['src_ip'] = request.form['src_ip']
-        packet_data['dest_ip'] = request.form['dest_ip']
-
+    if req.method == "POST":
+        packet_data = {
+            "src_ip": req.form.get('src_ip'),
+            "dst_ip": req.form.get('dst_ip')
+        }
+        print(packet_data)
         # TODO: Pass packet_data dict to processing program
         # Have processing program call back to respond() below
-    return
+    else:
+        return "<b>Invalid method type, use POST!</b>"
+    return "Hey"
 
 
 def respond(pi_ip, packet_data, packet_status):
