@@ -9,25 +9,25 @@ import argparse
 
 # try/except chaning - probably not the best, but works
 def handle_pkt(pkt):
-    headers = {}
+    headers = {"packets":[{}]}
 
     try: # Ether packet
-        headers["source_MAC"] = pkt.src
-        headers["dest_MAC"] = pkt.dst
+        headers[packets][0]["source_MAC"] = pkt.src
+        headers[packets][0]["dest_MAC"] = pkt.dst
 
         try: # IP packet
-            headers["source_IP"] = pkt[IP].src
-            headers["dest_IP"] = pkt[IP].dst
+            headers[packets][0]["source_IP"] = pkt[IP].src
+            headers[packets][0]["dest_IP"] = pkt[IP].dst
 
             try: # UDP packet
-                headers["source_port"] = pkt[UDP].sport
-                headers["dest_port"] = pkt[UDP].dport
+                headers[packets][0]["source_port"] = pkt[UDP].sport
+                headers[packets][0]["dest_port"] = pkt[UDP].dport
             except:
                 pass
 
             try: # TCP packet
-                headers["source_port"] = pkt[TCP].sport
-                headers["dest_port"] = pkt[TCP].dport
+                headers[packets][0]["source_port"] = pkt[TCP].sport
+                headers[packets][0]["dest_port"] = pkt[TCP].dport
             except:
                 pass
 
