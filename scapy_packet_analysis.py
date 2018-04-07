@@ -9,7 +9,8 @@ from scapy.all import *
 # assumes that pkt is a Ether packet
 def handle_pkt(pkt):
     try: 
-        MAC_addr = pkt.src
+        source_MAC = pkt.src
+        dest_MAC = pkt.dst
         source_IP = pkt[IP].src
         dest_IP = pkt[IP].dst
 
@@ -25,8 +26,8 @@ def handle_pkt(pkt):
 def main():
     for i in range(1, 5):
         pkt = sniff(count=1, store=1)
-        pkt.show()
-        header_info = handle_pkt(pkt)
+        #pkt[0].show()
+        header_info = handle_pkt(pkt[0])
         print("Packet info sniffed: {}\n".format(header_info))
 
 if __name__ == '__main__':
