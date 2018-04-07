@@ -15,7 +15,7 @@ def build_iptable_rule(packet_data):
     rule_string = "iptables "
     for key in rule_dict.keys:
         rule_string += " " + str(key) + " " + str(rule_dict[key])
-    return    
+    return      
 
 @app.route('/response', methods=['POST'])
 def receive_response():
