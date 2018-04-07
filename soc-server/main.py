@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 import requests as req
 
+app = Flask(__name__)
 @app.route('/check', methods=['POST'])
 def check():
     """
