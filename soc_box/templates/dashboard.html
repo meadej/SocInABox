@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Dash Board</title>
+    <title>TARP Dash Board</title>
   </head>
   <body>
-  	<h1>TARP</h1>
   	<table style="border: 1px solid black">
   		<tr style="border: 1px solid black">
   			<th>Device</th>
   			<th>IP</th>
   		</tr>
-  		{ % for device in devices %}
+  		{% for device in devices %}
   		<tr>
   			<td>{{ device['name'] }}</td>
   			<td>{{ device['ip'] }}</td>
   			<td><a href="/rules/<ip>">View firewall rules</a></td>
   		</tr>
+		{% endfor %}
   	</table>
   </body>
 </html>
