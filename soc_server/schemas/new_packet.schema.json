@@ -1,0 +1,37 @@
+{
+    "properties": {
+        "packets": {
+            "items": {
+                "properties": {
+                    "source_MAC": {
+                        "type": "string"
+                    },
+                    "dest_MAC": {
+                        "type": "string"
+                    },
+                    "source_IP": {
+                        "type": "string"
+                    },
+                    "dest_IP": {
+                        "type": "string"
+                    },
+                    "source_port": {
+                        "type": "number"
+                    },
+                    "dest_port": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "source_MAC",
+                    "dest_MAC",
+                    "source_IP",
+                    "dest_IP",
+                    "source_port",
+                    "dest_port"
+                ]
+            }
+        }
+    },
+    "required": ["packets"]
+}

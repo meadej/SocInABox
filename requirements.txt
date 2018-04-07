@@ -1,4 +1,5 @@
 pika
+jsonschema
 pendulum
 requests
 flask
