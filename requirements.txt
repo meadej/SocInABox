@@ -1,3 +1,5 @@
+pika
+pendulum
 requests
 flask
 scapy
