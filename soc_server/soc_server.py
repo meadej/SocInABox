@@ -30,7 +30,8 @@ def make_update_response(rules):
 def check():
     if req.method == "POST":
         packet_data = req.get_json()
-
+        if "packets" not in packet_data:
+            return make_status_response("RED", "<p>Invalid data sent</p>")
         # rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **{
         #     "username": "rabbitmq",
         #     "password": "rabbitmq",
