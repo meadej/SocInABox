@@ -1,6 +1,6 @@
 from rabbitmq import RabbitWorker
 import json
-from analyzers import VirusTotalAnalyzer
+from analyzers.virustotal import VirusTotalAnalyzer
 from multiprocessing import Pool
 
 
@@ -23,7 +23,8 @@ class SocAnalyzerServer(object):
                                 **self.config["rabbit"])
         self.rbw.connect()
         self.analyzers = [
-            VirusTotalAnalyzer(self.config["virustotal"])
+            VirusTotalAnalyzer(self.config["virustotal"]),
+            # TODO Add analyzers here
         ]
         self.thread_pool = Pool(len(self.analyzers))
 
@@ -34,26 +35,19 @@ class SocAnalyzerServer(object):
             return
         print("Received message")
         packet_data = json.loads(msg)
+        results = []
         for packet in packet_data["packets"]:
-            self.process_packet(packet)
+            results.append(self.process_packet(packet))
+        print("Processed message " + str(results))
+        # TODO Add to database here
+        tw = 2
 
     @staticmethod
     def _analyze(analyzer, data):
         return analyzer.analyze(data)
 
     def process_packet(self, raw_packet):
-        packet = Packet(raw_packet)
-        results = self.thread_pool.starmap(self._analyze, [(a, packet) for a in self.analyzers])
-        tw = 2
-        # Sample incoming packet
-        # {
-        #     "source_MAC": "10:8c:cf:57:2e:00",
-        #     "dest_MAC": "78:4f:43:6a:60:62",
-        #     "source_IP": "35.160.31.12",
-        #     "dest_IP": "10.202.8.115",
-        #     "source_port": 443,
-        #     "dest_port": 51168
-        # }
+        return self.thread_pool.starmap(self._analyze, [(a, Packet(raw_packet)) for a in self.analyzers])
 
     def start(self):
         self.rbw.start_consume(self.new_message)
