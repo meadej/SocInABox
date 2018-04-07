@@ -1,4 +1,4 @@
-# SocInABox IDS/IPS System
+# SocInABox Advanced IDS/IPS System
 ## We respond to MD5's mission to...
 
 ## Prepare ![alt text](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/prepare.PNG "prepare.png")
@@ -11,3 +11,13 @@ the data traversing into and out of the network.
 ## Respond ![alt text](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/respond.PNG "respond.png")
 Based on data received from our analysis platform, our SocInABox will implement intelligent firewall rules in-between
 the system and the external web.
+
+## System Summary
+
+## Technologies
+
+## Developers
+* Spencer Hanson
+* Nicholas Zimmerer
+* Ryan Craig
+* Jonathan Meade
