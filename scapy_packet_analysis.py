@@ -5,28 +5,49 @@
 #
 
 from scapy.all import *
+import argparse
 
-# assumes that pkt is a Ether packet
+# try/except chaning - probably not the best, but works
 def handle_pkt(pkt):
-    try: 
-        MAC_addr = pkt.src
-        source_IP = pkt[IP].src
-        dest_IP = pkt[IP].dst
+    headers = {}
 
-        # TCP specific
-        source_port = pkt[TCP].sport
-        dest_port = pkt[TCP].dport
-        return([MAC_addr, source_IP, dest_IP, source_port, dest_port])
+    try: # Ether packet
+        headers["source_MAC"] = pkt.src
+        headers["dest_MAC"] = pkt.dst
 
-    except: 
+        try: # IP packet
+            headers["source_IP"] = pkt[IP].src
+            headers["dest_IP"] = pkt[IP].dst
+
+            try: # UDP packet
+                headers["source_port"] = pkt[UDP].sport
+                headers["dest_port"] = pkt[UDP].dport
+            except:
+                pass
+
+            try: # TCP packet
+                headers["source_port"] = pkt[TCP].sport
+                headers["dest_port"] = pkt[TCP].dport
+            except:
+                pass
+
+        except:
+            pass
+
+        return(headers)
+
+    except:
         return("Error reading pkt")
 
 
 def main():
-    for i in range(1, 5):
+    parser = argparse.ArgumentParser(description='Pulls relevant info out of Eth/IP/[TCP|UDP] headers for diagnostics')
+    parser.add_argument('count', help='number of packets to sniff (because ctrl-C wont work', type=int)
+    args=parser.parse_args()
+    for i in range(0, args.count):
+
         pkt = sniff(count=1, store=1)
-        pkt.show()
-        header_info = handle_pkt(pkt)
+        header_info = handle_pkt(pkt[0])
         print("Packet info sniffed: {}\n".format(header_info))
 
 if __name__ == '__main__':
