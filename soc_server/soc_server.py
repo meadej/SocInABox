@@ -1,10 +1,10 @@
 from flask import Flask
 from flask import request as req
 import requests
+import pendulum
 import json
-
 from soc_server.analyzer import SocAnalyzer
-
+from soc_server.rabbitmq import RabbitProducer
 
 app = Flask(__name__)
 
@@ -20,6 +20,7 @@ def make_status_response(message, status):
 # Make a response to update with new rules
 def make_update_response(rules):
     return json.dumps({
+        "timestamp": pendulum.now().to_iso8601_string(),
         "rules": rules
     })
 
@@ -29,13 +30,17 @@ def make_update_response(rules):
 def check():
     if req.method == "POST":
         packet_data = req.get_json()
-        print(packet_data)
 
-        # {'source_MAC': '10:8c:cf:57:2e:00', 'dest_MAC': '78:4f:43:6a:60:62', 'source_IP': '35.160.31.12',
-        #  'dest_IP': '10.202.8.115', 'source_port': 443, 'dest_port': 51168}
+        rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **{
+            "username": "rabbitmq",
+            "password": "rabbitmq",
+            "host": "rabbitmq"
+        })
 
-        # TODO: Pass packet_data dict to processing program
-        # Have processing program call back to respond() below
+        rbp.connect()
+        rbp.publish(packet_data)
+        rbp.disconnect()
+
         return make_status_response("GREEN", "got {} packets".format(len(packet_data["packets"])))
     else:
         return make_status_response("RED", "<b>Invalid method type, use POST!</b>")
@@ -51,7 +56,7 @@ def update():
 
 
 
-   # Expected input
+    # Expected input
     # {
     #     "packets": [
     #         {"source_MAC": "10:8c:cf:57:2e:00", "dest_MAC": "78:4f:43:6a:60:62", "source_IP": "35.160.31.12",
@@ -64,6 +69,7 @@ def update():
 
     # Ouput
     # {
+    #     "timestamp": "<iso thing>",
     #     "rules": [
     #         {"ip": "123.123.123.123", "status": "GREEN"}, //Good
     #         {"ip": "234.234.234.234", "status": "RED"}, //Bad
