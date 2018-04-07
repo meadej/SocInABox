@@ -13,9 +13,11 @@
   		<tr>
   			<td>{{ device['name'] }}</td>
   			<td>{{ device['ip'] }}</td>
-  			<td><a href="/rules/<ip>">View firewall rules</a></td>
   		</tr>
 		{% endfor %}
+		<tr>
+			<td><a href="/rules/">View firewall rules</a></td>
+		</tr>
   	</table>
   </body>
 </html>
