@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 
 # Make a response to being given new information
-def make_status_response(message, status):
+def make_status_response(status, message):
     return json.dumps({
         "status": status,
         "message": message
@@ -30,8 +30,9 @@ def make_update_response(rules):
 def check():
     if req.method == "POST":
         packet_data = req.get_json()
-        if "packets" not in packet_data:
-            return make_status_response("RED", "<p>Invalid data sent</p>")
+
+        if not packet_data or "packets" not in packet_data:
+            return make_status_response("RED", "Invalid data sent")
         # rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **{
         #     "username": "rabbitmq",
         #     "password": "rabbitmq",
@@ -45,7 +46,7 @@ def check():
 
         return make_status_response("GREEN", "got {} packets".format(len(packet_data["packets"])))
     else:
-        return make_status_response("RED", "<b>Invalid method type, use POST!</b>")
+        return make_status_response("RED", "Invalid method type, use POST!")
 
 
 # Given an update query, get the new rules to be applied
