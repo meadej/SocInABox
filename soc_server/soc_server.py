@@ -31,16 +31,16 @@ def check():
     if req.method == "POST":
         packet_data = req.get_json()
 
-        rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **{
-            "username": "rabbitmq",
-            "password": "rabbitmq",
-            "host": "localhost"
-        })
-
-        rbp.connect()
+        # rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **{
+        #     "username": "rabbitmq",
+        #     "password": "rabbitmq",
+        #     "host": "localhost"
+        # })
+        #
+        # rbp.connect()
         # rbp.publish("stop")
-        rbp.publish(json.dumps(packet_data))
-        rbp.disconnect()
+        # rbp.publish(json.dumps(packet_data))
+        # rbp.disconnect()
 
         return make_status_response("GREEN", "got {} packets".format(len(packet_data["packets"])))
     else:

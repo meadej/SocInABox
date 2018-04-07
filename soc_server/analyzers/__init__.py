@@ -1,20 +1,11 @@
 import requests
 
 
-class Packet(object):
-    def __init__(self, packet):
-        self.src_mac = packet["source_MAC"]
-        self.dst_mac = packet["dest_MAC"]
-        self.src_ip = packet["source_IP"]
-        self.dst_ip = packet["dest_IP"]
-        self.src_port = packet["source_port"]
-        self.dst_port = packet["dest_port"]
-
-
 class Status(object):
-    RED = 0
-    GREEN = 1
-    AMBER = 2
+    RED = "RED"  # Result is negative
+    GREEN = "GREEN"  # Result is positive
+    AMBER = "AMBER"  # Result is unknown/needs user interaction
+    WHITE = "WHITE"  # Result couldn't be obtained
 
 
 class BaseAnalyzer(object):
