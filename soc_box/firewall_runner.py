@@ -2,6 +2,11 @@ import requests as req
 import os
 import json
 
+"""
+Functions to ping the soc server, retreive new firewall rules, and add them to the
+local system
+"""
+
 def execute_iptable_rule(rule):
     os.system(rule)
 
