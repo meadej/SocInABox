@@ -13,9 +13,10 @@ def check():
         packet_data = {}
         packet_data['src_ip'] = request.form['src_ip']
         packet_data['dest_ip'] = request.form['dest_ip']
-        #TODO: Pass packet_data dict to processing program
+        # TODO: Pass packet_data dict to processing program
         # Have processing program call back to respond() below
     return
+
 
 def respond(pi_ip, packet_data, packet_status):
     """
