@@ -3,7 +3,7 @@ from flask import request as req
 import requests
 import pendulum
 import json
-from soc_server.analyzer import SocAnalyzer
+# from soc_server.analyzer import SocAnalyzer
 from soc_server.rabbitmq import RabbitProducer
 
 app = Flask(__name__)
@@ -34,11 +34,12 @@ def check():
         rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **{
             "username": "rabbitmq",
             "password": "rabbitmq",
-            "host": "rabbitmq"
+            "host": "localhost"
         })
 
         rbp.connect()
-        rbp.publish(packet_data)
+        # rbp.publish("stop")
+        rbp.publish(json.dumps(packet_data))
         rbp.disconnect()
 
         return make_status_response("GREEN", "got {} packets".format(len(packet_data["packets"])))
@@ -47,7 +48,7 @@ def check():
 
 
 # Given an update query, get the new rules to be applied
-@app.route('/update', methods='GET')
+@app.route('/update', methods=['GET'])
 def update():
     return make_update_response([  # TODO Get actual data
         {"ip": "123.123.123.123", "status": "RED"},
