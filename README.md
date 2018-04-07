@@ -1,29 +1,32 @@
 # TARP Advanced IDS/IPS System
 Traffic Analysis and Response Platform
-## We respond to MD5's mission to...
+## Our response to MD5's mission to...
 
-## Prepare ![alt text](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/prepare.PNG "prepare.png")
+## Prepare ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/prepare.PNG "prepare.png")
 TARP utilizes open-source data about existing risks in addition to our analysis of new ones to be prepared for both known 
 and unknown threats. 
 
-## Detect ![alt text](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/detect.PNG "detect.png")
+## Detect ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/detect.PNG "detect.png")
 Our system uses a hybrid of static analysis and machine learning algorithims in order to keep a constantly updated watch over 
 the data traversing into and out of the network. 
 
-## Respond ![alt text](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/respond.PNG "respond.png")
+## Respond ![](https://raw.githubusercontent.com/meadej/SocInABox/master/pres/respond.PNG "respond.png")
 Based on data received from our analysis platform, TARP will implement intelligent firewall rules in-between
 the system and the external web. It will also notify the user when anamolies are detected, allowing enterprise
 users to diagnose and resolve the problem using their own personnel and resources. 
 
 ## System Summary
+TARP is a holistic incident detection and response platform for mission-critical IoT and ICS systems.
 
 ## What makes TARP different
+* TARP specifically targets IoT devices, meaning that operations for standard servers and workstations will not be impacted by the integration of TARP into a home or enterprise network. 
+* A disruption in TARP does not mean a disruption in service. IoT devices can utilize normal endpoints in the event of system failure. 
 * Dozens of commercially available IDS/IPS systems already use machine learning for malware analysis. TARP still utilizes the latest groundbreaking
-achievements in machine learning, but diverges from the norm by also incorporating static analysis of packet contents. This hardens our IoT networks against existing threats as well as new ones. 
+achievements in machine learning, but diverges from the norm by also incorporating static analysis of packet contents. This hardens our IoT networks against a variety of common threats and attacks. 
 * TARP dynamically determines the country of origin for each device based on hardware data, allowing us to determine regions of the world
 we could normally expect devices to be contacting for updates, etc.
-
-## Technologies
+* TARP uses no third-party servers or hardware, meaning that it can be brought into a classified environment on classified systems. 
+* The current iteration of TARP is cheap. Very cheap. 
 
 ## Future Goals
 * Honeypot options for organizations that want to observe adversary actions once they compromise a system. 
