@@ -19,14 +19,14 @@ users to diagnose and resolve the problem using their own personnel and resource
 TARP is a holistic incident detection and response platform for mission-critical IoT and ICS systems.
 
 ## What makes TARP different
-* TARP specifically targets IoT devices, meaning that operations for standard servers and workstations will not be impacted by the integration of TARP into a home or enterprise network. 
-* A disruption in TARP does not mean a disruption in service. IoT devices can utilize normal endpoints in the event of system failure. 
-* Dozens of commercially available IDS/IPS systems already use machine learning for malware analysis. TARP still utilizes the latest groundbreaking
-achievements in machine learning, but diverges from the norm by also incorporating static analysis of packet contents. This hardens our IoT networks against a variety of common threats and attacks. 
-* TARP dynamically determines the country of origin for each device based on hardware data, allowing us to determine regions of the world
-we could normally expect devices to be contacting for updates, etc.
+* **IoT focused:** TARP specifically targets IoT devices, meaning that operations for standard servers and workstations will not be impacted by the integration of TARP into a home or enterprise network. 
+* **Expandable:** TARP can grow and shrink to fit any size network. 
+* **Continuous:** A disruption in TARP does not mean a disruption in service. IoT devices can utilize normal endpoints in the event of system failure. 
+* **Hybrid analysis:** Dozens of commercially available IDS/IPS systems already use machine learning for malware analysis. TARP still utilizes the latest groundbreaking achievements in machine learning, but diverges from the norm by also incorporating static analysis of packet contents. This hardens our IoT networks against a variety of common threats and attacks. 
+* **Trusted sources:** Our static analysis incorporates malicious address data from institutions such as Google and SANS. 
+* **GeoIP integration:** TARP dynamically determines the country of origin for each device based on hardware data, allowing us to determine regions of the world we could normally expect devices to be contacting for updates, etc.
 * TARP uses no third-party servers or hardware, meaning that it can be brought into a classified environment on classified systems. 
-* The current iteration of TARP is cheap. Very cheap. 
+* **Cheap:** The current iteration of TARP is cheap. Very cheap. 
 
 ## Future Goals
 * Honeypot options for organizations that want to observe adversary actions once they compromise a system. 

@@ -17,10 +17,35 @@ def get_connections():
 def ui_connect():
     connected_devices = []
     for addr in get_connections():
-       connected_devices.append({
-           'name':'Unknown',
-           'ip':addr
-       })
+
+        # Get location & IP type
+        location = ''
+        ipType = ''
+        if addr[0:3] == '127' or addr[0:3] == '10.' or addr[0:7] == '192.168':
+            location = 'Local'
+            ipType = 'N/a'
+        else:
+            resp = req.get('http://extreme-ip-lookup.com/json/'+str(addr)).json()
+            ipType = resp['ipType']
+            if resp['country'] != '':
+                if resp['city'] != '':
+                    location = resp['city']+', '+resp['country']
+                else:
+                    location = resp['country']
+            # unknown location
+            else:
+                location = 'Unknown'
+            # unknown IP type
+            if ipType == '':
+                ipType = 'Unknown'
+
+
+        connected_devices.append({
+            'name':'Unknown',
+            'ip':addr,
+            'location':location,
+            'ipType':ipType
+        })
     return render_template('dashboard.html', devices=connected_devices)   
 
 if __name__ == "__main__":

@@ -9,11 +9,15 @@
   		<tr style="border: 1px solid black">
   			<th>Device</th>
   			<th>IP</th>
+  			<th>Location</th>
+  			<th>Type</th>
   		</tr>
   		{% for device in devices %}
   		<tr>
   			<td>{{ device['name'] }}</td>
   			<td>{{ device['ip'] }}</td>
+  			<td>{{ device['location'] }}</td>
+  			<td>{{ device['ipType'] }}</td>
   		</tr>
 		{% endfor %}
 		<tr>
