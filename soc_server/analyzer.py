@@ -1,9 +1,12 @@
-from rabbitmq import RabbitWorker
 import json
-from analyzers.virustotal import VirusTotalAnalyzer, Status
+import pendulum
+from rabbitmq import RabbitWorker
 from multiprocessing import Pool
 from pymongo import MongoClient
-import pendulum
+from analyzers.virustotal import VirusTotalAnalyzer
+from analyzers.sans import SansAnalyzer
+from analyzers.cymon import CymonAnalyzer
+from analyzers import Status
 
 
 class Packet(object):
@@ -36,6 +39,8 @@ class SocAnalyzerServer(object):
         self.rbw.connect()
         self.analyzers = [
             VirusTotalAnalyzer(self.config["virustotal"]),
+            SansAnalyzer(self.config["sans"]),
+            CymonAnalyzer(self.config["cymon"])
             # TODO Add analyzers here
         ]
         self.thread_pool = Pool(len(self.analyzers))
@@ -50,23 +55,18 @@ class SocAnalyzerServer(object):
             dt = pendulum.parse(is_in_db["timestamp"])
             if (timestamp - dt).in_seconds() > self.config["timestamp_expire_sec"]:
                 self.cache_col.delete_many({"ip": packet.dst_ip})
-                tw = 2
-                return None  # We found a timestamp, but it's outdated
+                return None  # We found a timestamp, but it's outdated, so replace it
             else:
                 is_in_db.pop("_id")
-                tw = 2
                 return is_in_db
         else:
             return None
 
     # Adds new packet entries to the mongo db
     def update_cache(self, entries):
-
-        tw = 2
-        return 2
+        self.cache_col.insert_many(entries)
 
     # Used to convert this color status into an entry, given the associated packet
-
     def new_message(self, channel, method, properties, body):
         timestamp = pendulum.now()
 
@@ -81,18 +81,15 @@ class SocAnalyzerServer(object):
             packet = Packet(raw_packet)
             cached = self.is_cached_packet(packet, timestamp)
 
-            if cached:
-                results.append(cached)
-            else:
+            if not cached:
                 analyzed_results = self.process_packet(packet)
                 results.append(packet.to_cache_entry(analyzed_results, timestamp))
-                tw = 2
-
-        self.update_cache(results)
-
+        if results:
+            print("Updating database")
+            self.update_cache(results)
+        else:
+            print("No new entries")
         print("Processed message " + str(results))
-
-        tw = 2
 
     @staticmethod
     def _analyze(analyzer, data):
@@ -117,5 +114,5 @@ if __name__ == "__main__":
     print("Exiting")
 
 
-# Mongo Schema
-# {"ip": "<ip>", "status": "<TLP color>", "timestamp": "<iso 8601 timestamp>", "val": "<val [0-1]>}
+    # Mongo Schema
+    # {"ip": "<ip>", "status": "<TLP color>", "timestamp": "<iso 8601 timestamp>", "val": "<val [0-1]>}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html style="width: 100%">
+  <head>
+    <title>TARP Rules</title>
+  </head>
+  <body style="width: 100%">
+  	<h3>Current Outbound Rules</h3>
+  	<table style="border: 1px solid black" border="2">
+  		<tr style="border: 1px solid black">
+  			<th>IP</th>
+  			<th>Timestamp</th>
+  			<th>Status</th>
+  		</tr>
+  		{% for ip,info in rules.items() %}
+  		<tr>
+  			<td>{{ ip }}</td>
+  			<td>{{ info["timestamp"] }}</td>
+            <td>{{ info["status"] }}</td>
+  		</tr>
+		{% endfor %}
+        <tr>
+			<td><a href="{{ h }}/">Home</a></td><td><a href="{{ h }}/update">Get update from server</a></td>
+		</tr>
+	</table>
+  </body>
+</html>

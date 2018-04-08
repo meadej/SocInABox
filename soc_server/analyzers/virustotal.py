@@ -12,32 +12,24 @@ class VirusTotalAnalyzer(BaseAnalyzer):
                             params={"ip": ip, "apikey": self.api_key})
 
     def analyze(self, packet):
-        try:
-            done = False
-            response = self.ip_report(packet.dst_ip)
-            while not done:
-                if response.status_code != 204:  # We're out of calls currently, wait a bit
-                    done = True
-                else:
-                    print("VirusTotal API Key limit, sleeping..")
-                    time.sleep(30)  # TODO Sleep b/c api token is exhausted, More tokens?
-                    response = self.ip_report(packet.dst_ip)
-            data = response.json()
-            if data["response_code"] == 0:
-                return Status.White()  # Not in VirusTotal Database
-            elif data["response_code"] == 1:
-                if not data["detected_urls"]:
-                    return Status.Green()
-                else:
-                    p_count = 0
-                    t_count = 0
-                    for url in data["detected_urls"].keys():
-                        p_count += data["detected_urls"][url]['positives']
-                        t_count += data["detected_urls"][url]['total']
-                    avg = p_count/t_count
-                    return Status.Red(avg)
+        done = False
+        response = self.ip_report(packet.dst_ip)
+        while not done:
+            if response.status_code != 204:  # We're out of calls currently, wait a bit
+                done = True
             else:
-                raise Exception("Invalid response code: {}".format(data["response_code"]))
-        except Exception as e:
-            print("Error in VirusTotal! " + str(e))
-            return Status.White()
+                print("VirusTotal API Key limit, sleeping..")
+                time.sleep(30)  # TODO Sleep b/c api token is exhausted, More tokens?
+                response = self.ip_report(packet.dst_ip)
+        data = response.json()
+        if data["response_code"] == 0:
+            return Status.White()  # Not in VirusTotal Database
+        elif data["response_code"] == 1:
+            if not data["detected_urls"]:
+                return Status.Green()
+            else:
+                return Status.Red(sum(
+                    [url["positives"] / url["total"] for url in data["detected_urls"]]) /
+                                  max(len(data["detected_urls"]), 1))
+        else:
+            raise Exception("Invalid response code: {}".format(data["response_code"]))
