@@ -9,6 +9,7 @@ from soc_server.rabbitmq import RabbitProducer
 
 # TODO Add stop?
 # rbp.publish("stop")
+# TODO /clean and /clear ?
 
 app = Flask(__name__)
 config = json.load(open("config.json", "r"))
