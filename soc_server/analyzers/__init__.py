@@ -2,36 +2,55 @@ import requests
 
 
 class Status(object):
+    RED_NAME = "RED"
+    GREEN_NAME = "GREEN"
+    WHITE_NAME = "WHITE"
+    AMBER_NAME = "AMBER"
+
     GREEN_VAL = 0  # No malicious activity detected
     WHITE_VAL = None  # Unknown value, something went wrong
 
+    MAPPING = {
+        GREEN_NAME: 0,
+        AMBER_NAME: 1,
+        RED_NAME: 5
+    }
+
+    THRESHOLDS = {
+        **{i: "GREEN" for i in range(0, 3)},
+        **{i: "AMBER" for i in range(3, 7)},
+        **{i: "RED" for i in range(7, 11)}
+    }
+
+    @staticmethod
+    def get_status(status_list):
+        score = sum([Status.MAPPING[s.name]/len(status_list)*100 for s in status_list])
+
+        return Status.THRESHOLDS.get(score, Status.RED_NAME)  # Get value, if threshold isn't in dict, it's red
+
     class _Color(object):
-        def __init__(self, val):
+        def __init__(self, name, val):
             self.val = val
-            self.name = "Color"
+            self.name = name
 
         def __str__(self):
             return self.name
 
     class Red(_Color):  # Result is negative
-        def __init__(self, val):
-            super(Status.Red, self).__init__(val)
-            self.name = "RED"
+        def __init__(self, val=1):
+            super(Status.Red, self).__init__(Status.RED_NAME, val)
 
     class Green(_Color):  # Result is positive
         def __init__(self):
-            super(Status.Green, self).__init__(Status.GREEN_VAL)
-            self.name = "GREEN"
+            super(Status.Green, self).__init__(Status.GREEN_NAME, Status.GREEN_VAL)
 
     class White(_Color):  # Result is unknown/needs user interaction
         def __init__(self):
-            super(Status.White, self).__init__(Status.WHITE_VAL)
-            self.name = "WHITE"
+            super(Status.White, self).__init__(Status.WHITE_NAME, Status.WHITE_VAL)
 
     class Amber(_Color):  # Result couldn't be obtained
-        def __init__(self, val):
-            super(Status.Amber, self).__init__(val)
-            self.name = "AMBER"
+        def __init__(self, val=0.5):
+            super(Status.Amber, self).__init__(Status.AMBER_NAME, val)
 
 
 class BaseAnalyzer(object):
