@@ -1,7 +1,9 @@
 from rabbitmq import RabbitWorker
 import json
-from analyzers.virustotal import VirusTotalAnalyzer
+from analyzers.virustotal import VirusTotalAnalyzer, Status
 from multiprocessing import Pool
+from pymongo import MongoClient
+import pendulum
 
 
 class Packet(object):
@@ -12,6 +14,16 @@ class Packet(object):
         self.dst_ip = packet["dest_IP"]
         self.src_port = packet["source_port"]
         self.dst_port = packet["dest_port"]
+
+    def to_cache_entry(self, analyzed_res, timestamp):
+        vals = [color.val for color in analyzed_res]
+        status = Status.get_status(analyzed_res)
+        return {
+            "ip": self.dst_ip,
+            "val": vals,
+            "status": status,
+            "timestamp": timestamp.to_iso8601_string()
+        }
 
 
 class SocAnalyzerServer(object):
@@ -28,7 +40,36 @@ class SocAnalyzerServer(object):
         ]
         self.thread_pool = Pool(len(self.analyzers))
 
+        self.client = MongoClient(self.config["mongo"])
+        self.cache_col = self.client.socinabox.soc_cache
+
+    # Checks if the packet is cached, removing it if it's outdated
+    def is_cached_packet(self, packet, timestamp):
+        is_in_db = self.cache_col.find_one({"ip": packet.dst_ip})  # Sorted by destination IP
+        if is_in_db:
+            dt = pendulum.parse(is_in_db["timestamp"])
+            if (timestamp - dt).in_seconds() > self.config["timestamp_expire_sec"]:
+                self.cache_col.delete_many({"ip": packet.dst_ip})
+                tw = 2
+                return None  # We found a timestamp, but it's outdated
+            else:
+                is_in_db.pop("_id")
+                tw = 2
+                return is_in_db
+        else:
+            return None
+
+    # Adds new packet entries to the mongo db
+    def update_cache(self, entries):
+
+        tw = 2
+        return 2
+
+    # Used to convert this color status into an entry, given the associated packet
+
     def new_message(self, channel, method, properties, body):
+        timestamp = pendulum.now()
+
         msg = body.decode()
         if msg == "stop":
             self.stop()
@@ -36,18 +77,29 @@ class SocAnalyzerServer(object):
         print("Received message")
         packet_data = json.loads(msg)
         results = []
-        for packet in packet_data["packets"]:
-            results.append(self.process_packet(packet))
+        for raw_packet in packet_data["packets"]:  # TODO Map this with multithreading
+            packet = Packet(raw_packet)
+            cached = self.is_cached_packet(packet, timestamp)
+
+            if cached:
+                results.append(cached)
+            else:
+                analyzed_results = self.process_packet(packet)
+                results.append(packet.to_cache_entry(analyzed_results, timestamp))
+                tw = 2
+
+        self.update_cache(results)
+
         print("Processed message " + str(results))
-        # TODO Add to database here
+
         tw = 2
 
     @staticmethod
     def _analyze(analyzer, data):
         return analyzer.analyze(data)
 
-    def process_packet(self, raw_packet):
-        return self.thread_pool.starmap(self._analyze, [(a, Packet(raw_packet)) for a in self.analyzers])
+    def process_packet(self, packet):
+        return self.thread_pool.starmap(self._analyze, [(a, packet) for a in self.analyzers])
 
     def start(self):
         self.rbw.start_consume(self.new_message)
@@ -63,3 +115,7 @@ if __name__ == "__main__":
     print("Starting")
     sa.start()
     print("Exiting")
+
+
+# Mongo Schema
+# {"ip": "<ip>", "status": "<TLP color>", "timestamp": "<iso 8601 timestamp>", "val": "<val [0-1]>}
