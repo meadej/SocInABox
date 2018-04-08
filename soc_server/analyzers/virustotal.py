@@ -29,7 +29,12 @@ class VirusTotalAnalyzer(BaseAnalyzer):
                 if not data["detected_urls"]:
                     return Status.Green()
                 else:
-                    avg = 8  # TODO calc avg
+                    p_count = 0
+                    t_count = 0
+                    for url in data["detected_urls"].keys():
+                        p_count += data["detected_urls"][url]['positives']
+                        t_count += data["detected_urls"][url]['total']
+                    avg = p_count/t_count
                     return Status.Red(avg)
             else:
                 raise Exception("Invalid response code: {}".format(data["response_code"]))
