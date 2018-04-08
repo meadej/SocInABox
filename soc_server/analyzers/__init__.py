@@ -8,12 +8,15 @@ class Status(object):
     AMBER_NAME = "AMBER"
 
     GREEN_VAL = 0  # No malicious activity detected
-    WHITE_VAL = None  # Unknown value, something went wrong
+    WHITE_VAL = -1  # Unknown value, something went wrong
+    AMBER_VAL = 1
+    RED_VAL = 5
 
     MAPPING = {
-        GREEN_NAME: 0,
-        AMBER_NAME: 1,
-        RED_NAME: 5
+        WHITE_NAME: WHITE_VAL,
+        GREEN_NAME: GREEN_VAL,
+        AMBER_NAME: AMBER_VAL,
+        RED_NAME: RED_VAL
     }
 
     THRESHOLDS = {
@@ -24,8 +27,9 @@ class Status(object):
 
     @staticmethod
     def get_status(status_list):
-        score = sum([Status.MAPPING[s.name]/len(status_list)*100 for s in status_list])
-
+        score = sum([Status.MAPPING[s.name]/len(status_list)*10 for s in status_list])
+        if score < 0:
+            return Status.WHITE_NAME
         return Status.THRESHOLDS.get(score, Status.RED_NAME)  # Get value, if threshold isn't in dict, it's red
 
     class _Color(object):

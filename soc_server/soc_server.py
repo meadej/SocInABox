@@ -10,7 +10,6 @@ app = Flask(__name__)
 config = json.load(open("config.json", "r"))
 
 
-
 # Make a response to being given new information
 def make_status_response(status, message):
     return json.dumps({
