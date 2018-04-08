@@ -23,6 +23,7 @@ def handle_pkt(pkt):
 
             # Drop packets to private IP
             if pkt[IP].dst[0:3] == '10.' or pkt[IP].dst[0:7] == '192.168':
+                # print(str(pkt[IP].dst))
                 print("Private destingation detected, dropping packet")
                 return None
 
