@@ -5,6 +5,7 @@ from multiprocessing import Pool
 from pymongo import MongoClient
 from analyzers.virustotal import VirusTotalAnalyzer
 from analyzers.sans import SansAnalyzer
+from analyzers.cymon import CymonAnalyzer
 from analyzers import Status
 
 
@@ -39,6 +40,7 @@ class SocAnalyzerServer(object):
         self.analyzers = [
             VirusTotalAnalyzer(self.config["virustotal"]),
             SansAnalyzer(self.config["sans"]),
+            CymonAnalyzer(self.config["cymon"])
             # TODO Add analyzers here
         ]
         self.thread_pool = Pool(len(self.analyzers))
