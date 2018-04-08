@@ -3,10 +3,12 @@ from flask import request as req
 import jsonschema
 import pendulum
 import json
-import pymongo
 from pendulum.parsing.exceptions import ParserError
 from pymongo import MongoClient
 from soc_server.rabbitmq import RabbitProducer
+
+# TODO Add stop?
+# rbp.publish("stop")
 
 app = Flask(__name__)
 config = json.load(open("config.json", "r"))
@@ -28,6 +30,7 @@ def make_update_response(rules, message):
         "message": message
     })
 
+
 # Takes in a POST request with the src_ip and dst_ip set and processes them through the static analysis/ML checker.
 @app.route('/check', methods=['POST'])
 def check():
@@ -45,8 +48,6 @@ def check():
         rbp = RabbitProducer(topic="analyze_stream", routing_key="socbox.analyze", **config["rabbit"])
 
         rbp.connect()
-        # TODO Add stop?
-        # rbp.publish("stop")
         rbp.publish(json.dumps(packet_data))
         rbp.disconnect()
         return make_check_response("GREEN", "got {} packets".format(len(packet_data["packets"])))
