@@ -14,7 +14,10 @@ class CymonAnalyzer(BaseAnalyzer):
 
         if "results" in data:
             if data["results"]:
-                return Status.Red(len(data["results"]))
+                if len(data["results"]) > 50:
+                    return Status.Red(len(data["results"]))
+                else:
+                    return Status.Green()
             else:
                 return Status.White()
 
